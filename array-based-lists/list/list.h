@@ -21,6 +21,8 @@ void addList(List *l, int i, int x);
 
 void appendList(List *l, int x);
 
+int popList(List *l);
+
 void resizeList(List *l);
 
 void freeList(List *l);

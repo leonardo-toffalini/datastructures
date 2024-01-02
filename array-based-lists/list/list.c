@@ -41,18 +41,20 @@ int removeList(List *l, int i) {
 void addList(List *l, int i, int x) {
   if (l->count == l->capacity)
     resizeList(l);
-
-  int temp = x;
-  l->items[i] = x;
-  for (int j = i; j < l->count; j++) {
-    l->items[j] = temp;
-    temp = l->items[j + 1];
-  }
-
   l->count++;
+
+  int prev = l->items[i];
+  l->items[i] = x;
+  for (int j = i + 1; j < l->count; j++) {
+    int cur = l->items[j];
+    l->items[j] = prev;
+    prev = cur;
+  }
 }
 
 void appendList(List *l, int x) { addList(l, l->count, x); }
+
+int popList(List *l) { return removeList(l, l->count - 1); }
 
 void resizeList(List *l) {
   l->capacity = (l->capacity < 8) ? 8 : (l->capacity * 2);

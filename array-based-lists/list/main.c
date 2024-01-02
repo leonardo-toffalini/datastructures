@@ -10,9 +10,15 @@ int main(void) {
     appendList(&l, i);
   }
   printList(&l);
-  setList(&l, 2, 10);
+  setList(&l, 2, 20);
   printList(&l);
-  addList(&l, 3, 3);
+  addList(&l, 3, 30);
+  printList(&l);
+  int x = removeList(&l, 2);
+  printf("removed element: %d\n", x);
+  printList(&l);
+  int y = popList(&l);
+  printf("popped element: %d\n", y);
   printList(&l);
   printf("l.count = %d\n", l.count);
 
