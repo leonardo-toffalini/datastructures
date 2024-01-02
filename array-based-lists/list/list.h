@@ -9,16 +9,20 @@ typedef struct List {
 
 List initList(void);
 
-int getList(List l, int i);
+void printList(List *l);
 
-int setList(List l, int i, int x);
+int getList(List *l, int i);
 
-int removeList(List l, int i);
+int setList(List *l, int i, int x);
 
-void addList(List l, int i, int x);
+int removeList(List *l, int i);
 
-void resizeList(List l);
+void addList(List *l, int i, int x);
 
-void freeList(List l);
+void appendList(List *l, int x);
+
+void resizeList(List *l);
+
+void freeList(List *l);
 
 #endif // !LIST_H
