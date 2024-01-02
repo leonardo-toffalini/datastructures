@@ -31,8 +31,7 @@ int removeList(List *l, int i) {
   int x = l->items[i];
 
   // Optimized approach
-  memmove(&l->items[i], &l->items[i + 1],
-          (l->count - i - 1) * sizeof(*l->items));
+  memmove(&l->items[i], &l->items[i + 1], (l->count - i - 1) * sizeof(*l->items));
 
   // Naive approach
   // for (int j = i; j < l->count; j++) {
@@ -52,8 +51,7 @@ void addList(List *l, int i, int x) {
   l->count++;
 
   // Optimized approach
-  memmove(&l->items[i + 1], &l->items[i],
-          (l->count - i - 1) * sizeof(*l->items));
+  memmove(&l->items[i + 1], &l->items[i], (l->count - i - 1) * sizeof(*l->items));
 
   l->items[i] = x;
 
