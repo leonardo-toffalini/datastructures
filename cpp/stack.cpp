@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ostream>
 #include <vector>
 
 struct Stack {
@@ -6,7 +7,7 @@ struct Stack {
   int *data;
   int n = 0;
 
-  Stack(int N, std::vector<int> v = {}) {
+  Stack(int N = 0, std::vector<int> v = {}) {
     size = N;
     data = new int[size];
     for (int i = 0; i < v.size(); ++i) {
