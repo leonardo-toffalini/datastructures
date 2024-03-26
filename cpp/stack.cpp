@@ -1,8 +1,6 @@
 #include <iostream>
 #include <vector>
 
-// NOTE: Still need to implement a way to not allow users to overindex the stack
-
 struct Stack {
   int size;
   int *data;
@@ -19,25 +17,44 @@ struct Stack {
 
   ~Stack() { delete[] data; }
 
+  void resize() {
+    if (n < size / 2)
+      size = size / 2;
+    if (n == size)
+      size = 2 * size;
+    int *tmp = new int[size];
+    std::copy(data, data + size, tmp);
+    delete[] data;
+    data = tmp;
+  }
+
   int pop() {
     n--;
+    resize();
     return data[n];
   }
 
   void push(int x) {
     n++;
+    resize();
     data[n - 1] = x;
+  }
+
+  int get(int i) {
+    if (0 <= i && i < n)
+      return data[i];
+    return 0;
   }
 };
 
 std::ostream &operator<<(std::ostream &out, Stack &s) {
   out << "Stack: " << '[';
   if (s.n > 0)
-    out << s.data[0] << ", ";
+    out << s.get(0) << ", ";
   for (int i = 1; i < s.n - 1; ++i) {
-    out << s.data[i] << ", ";
+    out << s.get(i) << ", ";
   }
-  out << s.data[s.n - 1] << ']';
+  out << s.get(s.n - 1) << ']';
   return out;
 }
 
