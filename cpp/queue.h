@@ -4,23 +4,23 @@
 template <typename T>
 class Queue {
  private:
-  int _size = 0;
-  T *data = new T[_size];
+  int capacity = 0;
+  T *_data = new T[capacity];
   int start = 0;
   int end = 0;
 
-  void free() { delete[] data; }
+  void free() { delete[] _data; }
 
  public:
   Queue() = default;
 
   ~Queue() { free(); }
 
-  int size() { return _size; }
+  int size() { return end - start; }
 
   void reserve(int n);
 
-  void resize() { return; }
+  void resize();
 
   void push_front(T x);
   void push_back(T x);
@@ -44,8 +44,32 @@ std::ostream &operator<<(std::ostream &out, Queue<T> q) {
 //-----------------------------------------------------------------//
 
 template <typename T>
+void Queue<T>::resize() {
+  int oldCap = capacity;
+  if (size() < capacity / 2)
+    capacity = capacity / 2;
+
+  if (size() == capacity)
+    capacity *= 2;
+
+  T *temp = new T[capacity];
+  int a = _data + (start % oldCap);
+  int b = _data + (end % oldCap);
+
+  if (a < b)  // [....a---->b....]
+    std::copy(a, b, temp);
+  else {  // [--->b....a--->] // [---->b...
+    std::copy(a, _data + oldCap, temp);
+    std::copy(_data, b, temp + (start % oldCap));
+  }
+
+  delete[] _data;
+  _data = temp;
+}
+
+template <typename T>
 void Queue<T>::reserve(int n) {
-  _size = n;
+  capacity = n;
   resize();
 }
 
@@ -53,19 +77,19 @@ template <typename T>
 void Queue<T>::push_front(T x) {
   start--;
   resize();
-  data[start % _size] = x;
+  _data[start % capacity] = x;
 }
 
 template <typename T>
 void Queue<T>::push_back(T x) {
   end++;
   resize();
-  data[end % _size] = x;
+  _data[end % capacity] = x;
 }
 
 template <typename T>
 T Queue<T>::pop_left() {
-  T result = data[start % _size];
+  T result = _data[start % capacity];
   start++;
   resize();
   return result;
@@ -73,7 +97,7 @@ T Queue<T>::pop_left() {
 
 template <typename T>
 T Queue<T>::pop_right() {
-  T result = data[end % _size];
+  T result = _data[end % capacity];
   end--;
   resize();
   return result;
