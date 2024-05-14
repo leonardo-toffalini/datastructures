@@ -1,58 +1,80 @@
 #include <iostream>
 #include <ostream>
 
-struct Queue {
-  int size;
-  int *data;
-  int start;
-  int end;
+template <typename T>
+class Queue {
+ private:
+  int _size = 0;
+  T *data = new T[_size];
+  int start = 0;
+  int end = 0;
 
-  Queue(int size = 0) {
-    this->size = size;
-    data = new int[size];
-    start = 0;
-    end = -1;
-  }
+  void free() { delete[] data; }
 
-  ~Queue() { delete[] data; }
+ public:
+  Queue() = default;
+
+  ~Queue() { free(); }
+
+  int size() { return _size; }
+
+  void reserve(int n);
 
   void resize() { return; }
 
-  void push_front(int x) {
-    start--;
-    resize();
-    data[start % size] = x;
-  }
+  void push_front(T x);
+  void push_back(T x);
 
-  void push_back(int x) {
-    end++;
-    resize();
-    data[end % size] = x;
-  }
-
-  int pop_left() {
-    start++;
-    resize();
-    return data[(start - 1) % size];
-  }
-
-  int pop_right() {
-    end--;
-    resize();
-    return data[(end + 1) % size];
-  }
+  T pop_left();
+  T pop_right();
 
   bool is_empty() { return start == end; }
 };
 
-std::ostream &operator<<(std::ostream &out, Queue q) {
+template <typename T>
+std::ostream &operator<<(std::ostream &out, Queue<T> q) {
   while (!q.is_empty()) {
     out << q.pop_left() << ' ';
   }
   return out;
 }
 
-int main(void) {
-  Queue q;
-  return 0;
+//-----------------------------------------------------------------//
+//----------------------- IMPLEMENTATIONS -------------------------//
+//-----------------------------------------------------------------//
+
+template <typename T>
+void Queue<T>::reserve(int n) {
+  _size = n;
+  resize();
+}
+
+template <typename T>
+void Queue<T>::push_front(T x) {
+  start--;
+  resize();
+  data[start % _size] = x;
+}
+
+template <typename T>
+void Queue<T>::push_back(T x) {
+  end++;
+  resize();
+  data[end % _size] = x;
+}
+
+template <typename T>
+T Queue<T>::pop_left() {
+  T result = data[start % _size];
+  start++;
+  resize();
+  return result;
+}
+
+template <typename T>
+T Queue<T>::pop_right() {
+  T result = data[end % _size];
+  end--;
+  resize();
+  return result;
 }
