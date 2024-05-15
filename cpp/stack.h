@@ -1,71 +1,81 @@
 #include <iostream>
 #include <ostream>
+#include <stdexcept>
 #include <vector>
 
-struct Stack {
-  int size;
-  int *data;
-  int n = 0;
+template <typename T>
+class Stack {
+ private:
+  int capacity;
+  T *_data;
+  int _size = 0;
 
-  Stack(int N = 0, std::vector<int> v = {}) {
-    size = N;
-    data = new int[size];
-    for (int i = 0; i < v.size(); ++i) {
-      data[i] = v[i];
-    }
-    n = v.size();
-  }
+ public:
+  Stack(T N, std::vector<T> v);
 
-  ~Stack() { delete[] data; }
+  ~Stack() { delete[] _data; }
 
-  void resize() {
-    if (n < size / 2)
-      size = size / 2;
-    if (n == size)
-      size = 2 * size;
-    int *tmp = new int[size];
-    std::copy(data, data + size, tmp);
-    delete[] data;
-    data = tmp;
-  }
+  int size() { return _size; }
 
-  int pop() {
-    n--;
-    resize();
-    return data[n];
-  }
-
-  void push(int x) {
-    n++;
-    resize();
-    data[n - 1] = x;
-  }
-
-  int get(int i) {
-    if (0 <= i && i < n)
-      return data[i];
-    return 0;
-  }
+  void resize();
+  T pop();
+  void push(T x);
+  T operator[](int i);
 };
 
-std::ostream &operator<<(std::ostream &out, Stack &s) {
+template <typename T>
+std::ostream &operator<<(std::ostream &out, Stack<T> &s) {
   out << "Stack: " << '[';
-  if (s.n > 0)
+  if (s.size() > 0)
     out << s.get(0) << ", ";
-  for (int i = 1; i < s.n - 1; ++i) {
+
+  for (int i = 1; i < s.size() - 1; ++i) {
     out << s.get(i) << ", ";
   }
-  out << s.get(s.n - 1) << ']';
+  out << s.get(s.size() - 1) << ']';
   return out;
 }
 
-int main(void) {
-  std::vector<int> v = {1, 2, 3, 4};
-  Stack s(10, v);
-  std::cout << s << '\n';
-  std::cout << s.pop() << '\n';
-  std::cout << s << '\n';
-  s.push(10);
-  std::cout << s << '\n';
-  return 0;
+template <typename T>
+Stack<T>::Stack(T N, std::vector<T> v) {
+  capacity = N;
+  _data = new int[capacity];
+
+  for (T i = 0; i < v.size(); ++i) {
+    _data[i] = v[i];
+  }
+  _size = v.size();
+}
+
+template <typename T>
+void Stack<T>::resize() {
+  if (_size < capacity / 2)
+    capacity = capacity / 2;
+  if (_size == capacity)
+    capacity = 2 * capacity;
+  T *tmp = new T[capacity];
+  std::copy(_data, _data + capacity, tmp);
+  delete[] _data;
+  _data = tmp;
+}
+
+template <typename T>
+T Stack<T>::pop() {
+  _size--;
+  resize();
+  return _data[_size];
+}
+
+template <typename T>
+void Stack<T>::push(T x) {
+  _size++;
+  resize();
+  _data[_size - 1] = x;
+}
+
+template <typename T>
+T Stack<T>::operator[](int i) {
+  if (0 <= i && i < _size)
+    return _data[i];
+  throw std::out_of_range("Got index out of range");
 }
